@@ -1,8 +1,10 @@
 """3-stage LLM Council orchestration."""
 
+import asyncio
 from typing import List, Dict, Any, Tuple
 from .openrouter import query_models_parallel, query_model
 from .config import COUNCIL_MODELS, CHAIRMAN_MODEL
+from .llm_router import call_llm
 
 
 async def stage1_collect_responses(user_query: str) -> List[Dict[str, Any]]:
@@ -15,19 +17,40 @@ async def stage1_collect_responses(user_query: str) -> List[Dict[str, Any]]:
     Returns:
         List of dicts with 'model' and 'response' keys
     """
-    messages = [{"role": "user", "content": user_query}]
+    async def _run_with_timeout(model_config: Dict[str, Any]) -> Dict[str, Any]:
+        return await asyncio.wait_for(
+            call_llm(model_config, user_query),
+            timeout=30.0,
+        )
 
-    # Query all models in parallel
-    responses = await query_models_parallel(COUNCIL_MODELS, messages)
+    valid_configs = []
+    for cfg in COUNCIL_MODELS:
+        if not isinstance(cfg, dict) or "provider" not in cfg or "model" not in cfg:
+            print(f"Stage1 error invalid model_config: {cfg}")
+            continue
+        valid_configs.append(cfg)
 
-    # Format results
+    tasks = [_run_with_timeout(cfg) for cfg in valid_configs]
+    responses = await asyncio.gather(*tasks, return_exceptions=True)
+
+    # Keep pipeline running: drop failed calls, log errors, keep successful ones.
     stage1_results = []
-    for model, response in responses.items():
-        if response is not None:  # Only include successful responses
-            stage1_results.append({
-                "model": model,
-                "response": response.get('content', '')
-            })
+    for cfg, response in zip(valid_configs, responses):
+        provider = cfg.get("provider")
+        model_name = cfg.get("model")
+
+        if isinstance(response, Exception):
+            print(
+                f"Stage1 error provider={provider} model={model_name}: {response}"
+            )
+            continue
+
+        stage1_results.append({
+            "provider": provider,
+            "model": model_name,
+            "response": response.get("output", ""),
+            "latency_ms": int(response.get("latency_ms", 0)),
+        })
 
     return stage1_results
 
