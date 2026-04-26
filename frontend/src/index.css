@@ -1,98 +1,160 @@
+/* ============================================================
+   FAIRCOUNCIL — ETHOS NOIR DESIGN SYSTEM
+   The Illuminated Verdict
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ── DESIGN TOKENS ───────────────────────────────────────── */
 :root {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  /* Surfaces */
+  --surface:               #12131c;
+  --surface-dim:           #0d0e17;
+  --surface-container-lowest: #0d0e17;
+  --surface-container-low: #1a1b24;
+  --surface-container:     #1e1f29;
+  --surface-container-high:#282933;
+  --surface-container-highest:#33343e;
+  --surface-bright:        #383843;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  /* Brand Colors */
+  --primary:               #c4c0ff;
+  --primary-container:     #8781ff;
+  --inverse-primary:       #4f44e2;
+  --on-primary:            #2000a4;
+  --on-primary-container:  #1b0091;
+
+  /* Secondary */
+  --secondary:             #c3c0ff;
+  --secondary-container:   #3a2dc2;
+
+  /* Tertiary (Success Emerald) */
+  --tertiary:              #4edea3;
+  --tertiary-container:    #00a572;
+  --on-tertiary:           #003824;
+
+  /* Error */
+  --error:                 #ffb4ab;
+  --error-container:       #93000a;
+
+  /* Text */
+  --on-surface:            #e3e1ef;
+  --on-surface-variant:    #c7c4d8;
+  --on-background:         #e3e1ef;
+  --outline:               #918fa1;
+  --outline-variant:       #464555;
+
+  /* Semantic Aliases */
+  --bg:                    var(--surface);
+  --sidebar-bg:            var(--surface-container-lowest);
+  --card-bg:               var(--surface-container);
+  --card-high:             var(--surface-container-high);
+  --card-highest:          var(--surface-container-highest);
+  --text-primary:          var(--on-surface);
+  --text-muted:            var(--on-surface-variant);
+  --text-subtle:           var(--outline);
+  --accent-violet:         #6c63ff;
+  --accent-emerald:        #10b981;
+  --accent-amber:          #f59e0b;
+  --accent-blue:           #60a5fa;
+  --accent-orange:         #fb923c;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Border radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-violet: 0 20px 40px rgba(108, 99, 255, 0.08);
+  --shadow-violet-md: 0 8px 24px rgba(108, 99, 255, 0.15);
+  --shadow-glow-violet: 0 0 24px rgba(108, 99, 255, 0.25);
+  --shadow-glow-emerald: 0 0 24px rgba(16, 185, 129, 0.2);
+  --shadow-glow-amber: 0 0 20px rgba(245, 158, 11, 0.18);
+
+  /* Transitions */
+  --transition: 0.2s ease;
+  --transition-slow: 0.35s ease;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* ── RESET ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background: #f5f5f5;
-}
-
-#root {
-  height: 100vh;
-  width: 100vw;
+html, body, #root {
+  height: 100%;
+  width: 100%;
   overflow: hidden;
 }
 
-/* Global markdown styling */
-.markdown-content {
-  padding: 12px;
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--surface);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
 }
 
-.markdown-content p {
-  margin: 0 0 12px 0;
-}
+/* ── SCROLLBAR ───────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--outline-variant); border-radius: var(--radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--outline); }
 
-.markdown-content p:last-child {
-  margin-bottom: 0;
-}
+/* ── UTILITY CLASSES ─────────────────────────────────────── */
+.text-primary   { color: var(--text-primary); }
+.text-muted     { color: var(--text-muted); }
+.text-subtle    { color: var(--text-subtle); }
+.text-violet    { color: var(--primary); }
+.text-emerald   { color: var(--tertiary); }
+.text-amber     { color: var(--accent-amber); }
 
-.markdown-content h1,
-.markdown-content h2,
-.markdown-content h3,
-.markdown-content h4,
-.markdown-content h5,
-.markdown-content h6 {
-  margin: 16px 0 8px 0;
-}
+.uppercase { text-transform: uppercase; letter-spacing: 0.06em; font-size: 0.7rem; font-weight: 600; }
 
-.markdown-content h1:first-child,
-.markdown-content h2:first-child,
-.markdown-content h3:first-child,
-.markdown-content h4:first-child,
-.markdown-content h5:first-child,
-.markdown-content h6:first-child {
-  margin-top: 0;
-}
-
-.markdown-content ul,
-.markdown-content ol {
-  margin: 0 0 12px 0;
-  padding-left: 24px;
-}
-
-.markdown-content li {
-  margin: 4px 0;
-}
-
-.markdown-content pre {
-  background: #f5f5f5;
-  padding: 12px;
-  border-radius: 4px;
-  overflow-x: auto;
-  margin: 0 0 12px 0;
-}
-
+/* ── MARKDOWN CONTENT ────────────────────────────────────── */
+.markdown-content { color: var(--text-muted); line-height: 1.75; }
+.markdown-content h1, .markdown-content h2, .markdown-content h3,
+.markdown-content h4 { color: var(--text-primary); margin: 1rem 0 0.5rem; font-weight: 700; }
+.markdown-content p { margin-bottom: 0.85rem; }
+.markdown-content ul, .markdown-content ol { padding-left: 1.5rem; margin-bottom: 0.85rem; }
+.markdown-content li { margin-bottom: 0.3rem; }
 .markdown-content code {
-  background: #f5f5f5;
+  background: var(--surface-container-high);
+  color: var(--primary);
   padding: 2px 6px;
-  border-radius: 3px;
-  font-family: monospace;
-  font-size: 0.9em;
+  border-radius: var(--radius-sm);
+  font-size: 0.85em;
+  font-family: 'Fira Code', monospace;
 }
-
-.markdown-content pre code {
-  background: none;
-  padding: 0;
+.markdown-content pre {
+  background: var(--surface-container-high);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin-bottom: 0.85rem;
 }
-
+.markdown-content pre code { background: none; padding: 0; color: var(--on-surface); }
 .markdown-content blockquote {
-  margin: 0 0 12px 0;
-  padding-left: 16px;
-  border-left: 4px solid #ddd;
-  color: #666;
+  border-left: 3px solid var(--accent-violet);
+  padding-left: var(--space-4);
+  color: var(--text-subtle);
+  margin-bottom: 0.85rem;
 }
+.markdown-content strong { color: var(--text-primary); font-weight: 600; }
+.markdown-content a { color: var(--primary); text-decoration: none; }
+.markdown-content a:hover { text-decoration: underline; }
+.markdown-content table { border-collapse: collapse; width: 100%; margin-bottom: 0.85rem; }
+.markdown-content th { background: var(--surface-container-high); color: var(--text-primary); padding: var(--space-2) var(--space-4); text-align: left; }
+.markdown-content td { padding: var(--space-2) var(--space-4); border-bottom: 1px solid rgba(70, 69, 85, 0.3); }

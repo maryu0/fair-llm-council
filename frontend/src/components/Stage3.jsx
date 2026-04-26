@@ -2,18 +2,24 @@ import ReactMarkdown from 'react-markdown';
 import './Stage3.css';
 
 export default function Stage3({ finalResponse }) {
-  if (!finalResponse) {
-    return null;
-  }
+  if (!finalResponse) return null;
+
+  const modelShort = (finalResponse.model || '').split('/').pop() || finalResponse.model;
 
   return (
-    <div className="stage stage3">
-      <h3 className="stage-title">Stage 3: Final Council Answer</h3>
-      <div className="final-response">
-        <div className="chairman-label">
-          Chairman: {finalResponse.model.split('/')[1] || finalResponse.model}
+    <div className="stage3-synthesis" id="stage3-synthesis">
+      <div className="stage3-synthesis-header">
+        <div className="stage3-chairman-label">
+          <span className="chairman-crown">👑</span>
+          <span className="chairman-title">Chairman Synthesis</span>
         </div>
-        <div className="final-text markdown-content">
+        <div className="chairman-model-chip">
+          <div className="chairman-model-dot" />
+          {modelShort}
+        </div>
+      </div>
+      <div className="stage3-synthesis-body">
+        <div className="markdown-content">
           <ReactMarkdown>{finalResponse.response}</ReactMarkdown>
         </div>
       </div>
