@@ -98,3 +98,53 @@ def test_stage1_timeout_handling_graceful(monkeypatch: pytest.MonkeyPatch) -> No
 
     # Timeout should be isolated and Stage 1 should return successful responses only.
     assert stage1_results == []
+
+
+def test_select_chairperson_prefers_adjusted_score() -> None:
+    fairness_leaderboard = [
+        {
+            "provider": "gemini",
+            "model": "model-a",
+            "average_rank": 1.0,
+            "performance_score": 0.95,
+            "bias_score": 3.5,
+            "bias_score_normalized": 0.35,
+            "final_score": 0.775,
+            "rankings_count": 2,
+        },
+        {
+            "provider": "groq",
+            "model": "model-b",
+            "average_rank": 1.5,
+            "performance_score": 0.90,
+            "bias_score": 0.2,
+            "bias_score_normalized": 0.02,
+            "final_score": 0.89,
+            "rankings_count": 2,
+        },
+    ]
+
+    selection = council.select_chairperson(fairness_leaderboard)
+
+    assert selection["model"] == "model-b"
+    assert selection["final_score"] == pytest.approx(0.89)
+
+
+def test_calculate_aggregate_rankings_includes_missing_models() -> None:
+    stage2_results = [
+        {
+            "provider": "gemini",
+            "model": "evaluator-a",
+            "ranking": "FINAL RANKING:\n1. Response A\n2. Response B",
+            "parsed_ranking": ["Response A", "Response B"],
+        }
+    ]
+    label_to_model = {
+        "Response A": "model-a",
+        "Response B": "model-b",
+    }
+
+    aggregate = council.calculate_aggregate_rankings(stage2_results, label_to_model)
+
+    assert [entry["model"] for entry in aggregate] == ["model-a", "model-b"]
+    assert aggregate[0]["performance_score"] >= aggregate[1]["performance_score"]

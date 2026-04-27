@@ -9,7 +9,7 @@ load_dotenv()
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-# OpenRouter API key (legacy fallback)
+# Legacy OpenRouter API key, retained only for unused compatibility paths.
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 # Council members - free-tier provider/model configs
@@ -21,7 +21,14 @@ COUNCIL_MODELS = [
 # Chairman model - synthesizes final response
 CHAIRMAN_MODEL = "gemini-2.5-flash"
 
-# OpenRouter API endpoint
+# Bias evaluator used for prompt-based fairness scoring.
+BIAS_EVALUATOR_PROVIDER = os.getenv("BIAS_EVALUATOR_PROVIDER", "gemini")
+BIAS_EVALUATOR_MODEL = os.getenv("BIAS_EVALUATOR_MODEL", CHAIRMAN_MODEL)
+
+# Weight used in Final Score = Performance Score - lambda * Bias Score
+FAIRNESS_LAMBDA = float(os.getenv("FAIRNESS_LAMBDA", "0.5"))
+
+# Legacy OpenRouter API endpoint, retained only for unused compatibility paths.
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
 # Data directory for conversation storage

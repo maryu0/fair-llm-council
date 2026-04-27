@@ -4,25 +4,28 @@ This file contains technical details, architectural decisions, and important imp
 
 ## Project Overview
 
-LLM Council is a 3-stage deliberation system where multiple LLMs collaboratively answer user questions. The key innovation is anonymized peer review in Stage 2, preventing models from playing favorites.
+FairCouncil is a 3-stage deliberation system where multiple LLMs collaboratively answer user questions. The key innovation is bias-aware adaptive chairperson selection: peer review still happens in Stage 2, but the final synthesizer is chosen using a fairness-adjusted score.
 
 ## Architecture
 
 ### Backend Structure (`backend/`)
 
 **`config.py`**
-- Contains `COUNCIL_MODELS` (list of OpenRouter model identifiers)
+
+- Contains `COUNCIL_MODELS` (provider/model configs for Gemini and Groq)
 - Contains `CHAIRMAN_MODEL` (model that synthesizes final answer)
-- Uses environment variable `OPENROUTER_API_KEY` from `.env`
+- Uses environment variables `GEMINI_API_KEY` and `GROQ_API_KEY` from `.env`
 - Backend runs on **port 8001** (NOT 8000 - user had another app on 8000)
 
 **`openrouter.py`**
-- `query_model()`: Single async model query
-- `query_models_parallel()`: Parallel queries using `asyncio.gather()`
-- Returns dict with 'content' and optional 'reasoning_details'
+
+- `call_gemini()`: Direct Gemini client with retry/backoff
+- `call_groq()`: Direct Groq client with timeout handling
+- Returns dict with `model`, `output`, and `latency_ms`
 - Graceful degradation: returns None on failure, continues with successful responses
 
 **`council.py`** - The Core Logic
+
 - `stage1_collect_responses()`: Parallel queries to all council models
 - `stage2_collect_rankings()`:
   - Anonymizes responses as "Response A, B, C, etc."
@@ -30,49 +33,60 @@ LLM Council is a 3-stage deliberation system where multiple LLMs collaboratively
   - Prompts models to evaluate and rank (with strict format requirements)
   - Returns tuple: (rankings_list, label_to_model_dict)
   - Each ranking includes both raw text and `parsed_ranking` list
-- `stage3_synthesize_final()`: Chairman synthesizes from all responses + rankings
+- `evaluate_bias_scores()`: Prompt-based fairness scoring with heuristic fallback
+- `calculate_aggregate_rankings()`: Computes average rank position and performance score
+- `build_fairness_leaderboard()`: Combines performance and bias into a final adjusted score
+- `select_chairperson()`: Chooses the final model from the fairness leaderboard
+- `stage3_synthesize_final()`: Selected chairperson synthesizes from all responses + rankings
 - `parse_ranking_from_text()`: Extracts "FINAL RANKING:" section, handles both numbered lists and plain format
-- `calculate_aggregate_rankings()`: Computes average rank position across all peer evaluations
 
 **`storage.py`**
+
 - JSON-based conversation storage in `data/conversations/`
 - Each conversation: `{id, created_at, messages[]}`
-- Assistant messages contain: `{role, stage1, stage2, stage3}`
-- Note: metadata (label_to_model, aggregate_rankings) is NOT persisted to storage, only returned via API
+- Assistant messages contain: `{role, stage1, stage2, stage3, metadata}`
+- Metadata now includes the label mapping, aggregate rankings, bias scores, fairness leaderboard, and selected chairperson
 
 **`main.py`**
+
 - FastAPI app with CORS enabled for localhost:5173 and localhost:3000
 - POST `/api/conversations/{id}/message` returns metadata in addition to stages
-- Metadata includes: label_to_model mapping and aggregate_rankings
+- Metadata includes: label_to_model mapping, aggregate rankings, bias scores, fairness leaderboard, and chairperson selection
 
 ### Frontend Structure (`frontend/src/`)
 
 **`App.jsx`**
+
 - Main orchestration: manages conversations list and current conversation
 - Handles message sending and metadata storage
 - Important: metadata is stored in the UI state for display but not persisted to backend JSON
 
 **`components/ChatInterface.jsx`**
+
 - Multiline textarea (3 rows, resizable)
 - Enter to send, Shift+Enter for new line
 - User messages wrapped in markdown-content class for padding
 
 **`components/Stage1.jsx`**
+
 - Tab view of individual model responses
 - ReactMarkdown rendering with markdown-content wrapper
 
 **`components/Stage2.jsx`**
+
 - **Critical Feature**: Tab view showing RAW evaluation text from each model
 - De-anonymization happens CLIENT-SIDE for display (models receive anonymous labels)
 - Shows "Extracted Ranking" below each evaluation so users can validate parsing
-- Aggregate rankings shown with average position and vote count
-- Explanatory text clarifies that boldface model names are for readability only
+- Fairness leaderboard shows average rank, performance score, bias score, and final adjusted score
+- Selected chairperson is highlighted for transparency
 
 **`components/Stage3.jsx`**
-- Final synthesized answer from chairman
+
+- Final synthesized answer from the selected chairperson
 - Green-tinted background (#f0fff0) to highlight conclusion
 
 **Styling (`*.css`)**
+
 - Light mode theme (not dark mode)
 - Primary color: #4a90e2 (blue)
 - Global markdown styling in `index.css` with `.markdown-content` class
@@ -81,7 +95,9 @@ LLM Council is a 3-stage deliberation system where multiple LLMs collaboratively
 ## Key Design Decisions
 
 ### Stage 2 Prompt Format
+
 The Stage 2 prompt is very specific to ensure parseable output:
+
 ```
 1. Evaluate each response individually first
 2. Provide "FINAL RANKING:" header
@@ -91,7 +107,10 @@ The Stage 2 prompt is very specific to ensure parseable output:
 
 This strict format allows reliable parsing while still getting thoughtful evaluations.
 
+Bias scoring is handled separately after Stage 2 using a prompt-based fairness auditor plus a heuristic fallback so the system can still produce a chairperson when the bias scorer fails.
+
 ### De-anonymization Strategy
+
 - Models receive: "Response A", "Response B", etc.
 - Backend creates mapping: `{"Response A": "openai/gpt-5.1", ...}`
 - Frontend displays model names in **bold** for readability
@@ -99,11 +118,14 @@ This strict format allows reliable parsing while still getting thoughtful evalua
 - This prevents bias while maintaining transparency
 
 ### Error Handling Philosophy
-- Continue with successful responses if some models fail (graceful degradation)
+
+- Continue with successful responses if some models fail (gr
+- If fairness scoring fails, fall back to a heuristic bias score and then select the chairperson from the best available adjusted scoreaceful degradation)
 - Never fail the entire request due to single model failure
 - Log errors but don't expose to user unless all models fail
 
 ### UI/UX Transparency
+
 - All raw outputs are inspectable via tabs
 - Parsed rankings shown below raw text for validation
 - Users can verify system's interpretation of model outputs
@@ -112,17 +134,21 @@ This strict format allows reliable parsing while still getting thoughtful evalua
 ## Important Implementation Details
 
 ### Relative Imports
+
 All backend modules use relative imports (e.g., `from .config import ...`) not absolute imports. This is critical for Python's module system to work correctly when running as `python -m backend.main`.
 
 ### Port Configuration
+
 - Backend: 8001 (changed from 8000 to avoid conflict)
 - Frontend: 5173 (Vite default)
 - Update both `backend/main.py` and `frontend/src/api.js` if changing
 
 ### Markdown Rendering
+
 All ReactMarkdown components must be wrapped in `<div className="markdown-content">` for proper spacing. This class is defined globally in `index.css`.
 
 ### Model Configuration
+
 Models are hardcoded in `backend/config.py`. Chairman can be same or different from council members. The current default is Gemini as chairman per user preference.
 
 ## Common Gotchas
@@ -143,7 +169,7 @@ Models are hardcoded in `backend/config.py`. Chairman can be same or different f
 
 ## Testing Notes
 
-Use `test_openrouter.py` to verify API connectivity and test different model identifiers before adding to council. The script tests both streaming and non-streaming modes.
+Use `test_free_pipeline.py` to verify the Gemini and Groq provider paths, timeout handling, and Stage 1 orchestration.
 
 ## Data Flow Summary
 
@@ -151,13 +177,15 @@ Use `test_openrouter.py` to verify API connectivity and test different model ide
 User Query
     ↓
 Stage 1: Parallel queries → [individual responses]
+Bias Evaluation Layer → [bias scores per response]
     ↓
-Stage 2: Anonymize → Parallel ranking queries → [evaluations + parsed rankings]
+Fairness Leaderboard → [performance score - lambda x bias score]
     ↓
-Aggregate Rankings Calculation → [sorted by avg position]
+Stage 3: Selected chairperson synthesis with full context
     ↓
-Stage 3: Chairman synthesis with full context
+Return: {stage1, stage2, stage3, metadata}
     ↓
+Frontend: Display with tabs + validation UI + fairness leaderboard
 Return: {stage1, stage2, stage3, metadata}
     ↓
 Frontend: Display with tabs + validation UI

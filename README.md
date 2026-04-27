@@ -16,7 +16,7 @@ Instead of routing through OpenRouter, it calls providers directly:
 FairCouncil computes an adjusted leadership score for each candidate model:
 
 $$
-	ext{Final Score} = \text{Performance Score} - \lambda \times \text{Bias Score}
+\text{Final Score} = \text{Performance Score} - \lambda \times \text{Bias Score}
 $$
 
 Where:

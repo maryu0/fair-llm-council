@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from 'react';
-import ReactMarkdown from 'react-markdown';
-import Stage1 from './Stage1';
-import Stage2 from './Stage2';
-import Stage3 from './Stage3';
-import './ChatInterface.css';
+import { useState, useEffect, useRef } from "react";
+import ReactMarkdown from "react-markdown";
+import Stage1 from "./Stage1";
+import Stage2 from "./Stage2";
+import Stage3 from "./Stage3";
+import "./ChatInterface.css";
 
 // ── Icons ────────────────────────────────────────────────
 
@@ -14,11 +14,49 @@ function CouncilIconLarge() {
       <circle cx="40" cy="12" r="7" fill="#8781ff" />
       <circle cx="16" cy="62" r="7" fill="#8781ff" />
       <circle cx="64" cy="62" r="7" fill="#8781ff" />
-      <line x1="40" y1="19" x2="40" y2="30" stroke="#6c63ff" strokeWidth="2.5" strokeOpacity="0.7" />
-      <line x1="21" y1="57" x2="32" y2="46" stroke="#6c63ff" strokeWidth="2.5" strokeOpacity="0.7" />
-      <line x1="59" y1="57" x2="48" y2="46" stroke="#6c63ff" strokeWidth="2.5" strokeOpacity="0.7" />
-      <circle cx="40" cy="40" r="18" stroke="#6c63ff" strokeWidth="1" strokeOpacity="0.2" />
-      <circle cx="40" cy="40" r="28" stroke="#6c63ff" strokeWidth="0.6" strokeOpacity="0.1" />
+      <line
+        x1="40"
+        y1="19"
+        x2="40"
+        y2="30"
+        stroke="#6c63ff"
+        strokeWidth="2.5"
+        strokeOpacity="0.7"
+      />
+      <line
+        x1="21"
+        y1="57"
+        x2="32"
+        y2="46"
+        stroke="#6c63ff"
+        strokeWidth="2.5"
+        strokeOpacity="0.7"
+      />
+      <line
+        x1="59"
+        y1="57"
+        x2="48"
+        y2="46"
+        stroke="#6c63ff"
+        strokeWidth="2.5"
+        strokeOpacity="0.7"
+      />
+      <circle
+        cx="40"
+        cy="40"
+        r="18"
+        stroke="#6c63ff"
+        strokeWidth="1"
+        strokeOpacity="0.2"
+      />
+      <circle
+        cx="40"
+        cy="40"
+        r="28"
+        stroke="#6c63ff"
+        strokeWidth="0.6"
+        strokeOpacity="0.1"
+      />
     </svg>
   );
 }
@@ -26,16 +64,40 @@ function CouncilIconLarge() {
 function SendIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M22 2L11 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M22 2L11 13"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M22 2L15 22L11 13L2 9L22 2Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
 
 function ChevronDown() {
   return (
-    <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="14" height="14">
-      <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      width="14"
+      height="14"
+    >
+      <path
+        d="M4 6l4 4 4-4"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -43,10 +105,10 @@ function ChevronDown() {
 // ── Helpers ───────────────────────────────────────────────
 
 const QUICK_CHIPS = [
-  'Ethical trade-offs in AI decision making',
-  'Bias detection in datasets',
-  'Policy synthesis for fair governance',
-  'Explain bias-aware model selection',
+  "Ethical trade-offs in AI decision making",
+  "Bias detection in datasets",
+  "Policy synthesis for fair governance",
+  "Explain bias-aware model selection",
 ];
 
 function StageLoadingCard({ badgeClass, badgeLabel, title, sub }) {
@@ -57,7 +119,14 @@ function StageLoadingCard({ badgeClass, badgeLabel, title, sub }) {
         <div className="spinner-ring inner" />
       </div>
       <div className="stage-loading-text">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 8,
+            marginBottom: 4,
+          }}
+        >
           <span className={`stage-badge ${badgeClass}`}>
             <span className="stage-badge-dot" />
             {badgeLabel}
@@ -67,7 +136,9 @@ function StageLoadingCard({ badgeClass, badgeLabel, title, sub }) {
         <div className="stage-loading-sub">
           {sub}&nbsp;
           <span className="loading-dots">
-            <span /><span /><span />
+            <span />
+            <span />
+            <span />
           </span>
         </div>
       </div>
@@ -75,12 +146,19 @@ function StageLoadingCard({ badgeClass, badgeLabel, title, sub }) {
   );
 }
 
-function CollapsibleStage({ badgeClass, badgeLabel, title, meta, children, defaultOpen = true }) {
+function CollapsibleStage({
+  badgeClass,
+  badgeLabel,
+  title,
+  meta,
+  children,
+  defaultOpen = true,
+}) {
   const [open, setOpen] = useState(defaultOpen);
 
   return (
     <div className="stage-container">
-      <div className="stage-header" onClick={() => setOpen(o => !o)}>
+      <div className="stage-header" onClick={() => setOpen((o) => !o)}>
         <div className="stage-header-left">
           <span className={`stage-badge ${badgeClass}`}>
             <span className="stage-badge-dot" />
@@ -89,28 +167,28 @@ function CollapsibleStage({ badgeClass, badgeLabel, title, meta, children, defau
           <span className="stage-title-text">{title}</span>
           {meta && <span className="stage-meta">{meta}</span>}
         </div>
-        <span className={`stage-chevron ${open ? 'expanded' : ''}`}>
+        <span className={`stage-chevron ${open ? "expanded" : ""}`}>
           <ChevronDown />
         </span>
       </div>
-      {open && (
-        <div className="stage-body">
-          {children}
-        </div>
-      )}
+      {open && <div className="stage-body">{children}</div>}
     </div>
   );
 }
 
 // ── Main Component ────────────────────────────────────────
 
-export default function ChatInterface({ conversation, onSendMessage, isLoading }) {
-  const [input, setInput] = useState('');
+export default function ChatInterface({
+  conversation,
+  onSendMessage,
+  isLoading,
+}) {
+  const [input, setInput] = useState("");
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   useEffect(() => {
@@ -121,15 +199,15 @@ export default function ChatInterface({ conversation, onSendMessage, isLoading }
     if (e) e.preventDefault();
     if (input.trim() && !isLoading) {
       onSendMessage(input.trim());
-      setInput('');
+      setInput("");
       if (textareaRef.current) {
-        textareaRef.current.style.height = 'auto';
+        textareaRef.current.style.height = "auto";
       }
     }
   };
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSubmit();
     }
@@ -139,8 +217,8 @@ export default function ChatInterface({ conversation, onSendMessage, isLoading }
     setInput(e.target.value);
     // Auto-resize
     const ta = e.target;
-    ta.style.height = 'auto';
-    ta.style.height = Math.min(ta.scrollHeight, 140) + 'px';
+    ta.style.height = "auto";
+    ta.style.height = Math.min(ta.scrollHeight, 140) + "px";
   };
 
   const handleQuickChip = (text) => {
@@ -158,10 +236,10 @@ export default function ChatInterface({ conversation, onSendMessage, isLoading }
           </div>
           <div className="empty-state-headline">Ask the Council</div>
           <div className="empty-state-sub">
-            Multiple AI models will debate and synthesize the best answer for you.
-            Bias-aware, peer-ranked, and unified.
+            Multiple AI models will debate and synthesize the best answer for
+            you. Bias-aware, peer-ranked, and unified.
           </div>
-          <div style={{ color: 'var(--text-subtle)', fontSize: '0.8rem' }}>
+          <div style={{ color: "var(--text-subtle)", fontSize: "0.8rem" }}>
             ← Create a new conversation to begin
           </div>
         </div>
@@ -177,9 +255,9 @@ export default function ChatInterface({ conversation, onSendMessage, isLoading }
       <div className="chat-header">
         <div className="chat-header-title">
           <span className="chat-title-text">
-            {conversation.title && conversation.title !== 'New Conversation'
+            {conversation.title && conversation.title !== "New Conversation"
               ? conversation.title
-              : 'New Conversation'}
+              : "New Conversation"}
           </span>
         </div>
         <div className="chat-status-badge">
@@ -216,7 +294,7 @@ export default function ChatInterface({ conversation, onSendMessage, isLoading }
         ) : (
           conversation.messages.map((msg, idx) => (
             <div key={idx} className="message-group">
-              {msg.role === 'user' ? (
+              {msg.role === "user" ? (
                 /* ── USER MESSAGE ── */
                 <div className="user-message">
                   <div className="message-label-user">You</div>
@@ -245,7 +323,7 @@ export default function ChatInterface({ conversation, onSendMessage, isLoading }
                       badgeClass="stage1-badge"
                       badgeLabel="Stage 1 • Collect"
                       title="Individual Responses"
-                      meta={`${msg.stage1.length} model${msg.stage1.length !== 1 ? 's' : ''}`}
+                      meta={`${msg.stage1.length} model${msg.stage1.length !== 1 ? "s" : ""}`}
                       defaultOpen={true}
                     >
                       <Stage1 responses={msg.stage1} />
@@ -266,13 +344,17 @@ export default function ChatInterface({ conversation, onSendMessage, isLoading }
                       badgeClass="stage2-badge"
                       badgeLabel="Stage 2 • Review"
                       title="Peer Rankings"
-                      meta={`${msg.stage2.length} evaluator${msg.stage2.length !== 1 ? 's' : ''}`}
+                      meta={`${msg.stage2.length} evaluator${msg.stage2.length !== 1 ? "s" : ""}`}
                       defaultOpen={true}
                     >
                       <Stage2
                         rankings={msg.stage2}
                         labelToModel={msg.metadata?.label_to_model}
                         aggregateRankings={msg.metadata?.aggregate_rankings}
+                        fairnessLeaderboard={msg.metadata?.fairness_leaderboard}
+                        chairpersonSelection={
+                          msg.metadata?.chairperson_selection
+                        }
                       />
                     </CollapsibleStage>
                   )}
@@ -286,9 +368,7 @@ export default function ChatInterface({ conversation, onSendMessage, isLoading }
                       sub="Chairman is deliberating"
                     />
                   )}
-                  {msg.stage3 && (
-                    <Stage3 finalResponse={msg.stage3} />
-                  )}
+                  {msg.stage3 && <Stage3 finalResponse={msg.stage3} />}
                 </div>
               )}
             </div>
