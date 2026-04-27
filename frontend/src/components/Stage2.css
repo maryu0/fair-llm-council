@@ -1,153 +1,203 @@
+/* ============================================================
+   STAGE 2 — Peer Rankings — Ethos Noir
+   ============================================================ */
+
 .stage2 {
-  background: #fafafa;
+  /* Inherits from stage base */
 }
 
-.stage2 h4 {
-  margin: 20px 0 8px 0;
-  color: #333;
-  font-size: 14px;
-  font-weight: 600;
-}
-
-.stage2 h4:first-of-type {
-  margin-top: 0;
-}
-
-.stage-description {
-  margin: 0 0 12px 0;
-  color: #666;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.aggregate-rankings {
-  background: #f0f7ff;
-  padding: 16px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-  border: 2px solid #d0e7ff;
-}
-
-.aggregate-rankings h4 {
-  margin: 0 0 12px 0;
-  color: #2a7ae2;
-  font-size: 15px;
-}
-
-.aggregate-list {
+/* Aggregate Leaderboard */
+.leaderboard {
+  margin-top: var(--space-3);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
-.aggregate-item {
+.leaderboard-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px;
-  background: #ffffff;
-  border-radius: 6px;
-  border: 1px solid #d0e7ff;
+  gap: var(--space-3);
+  padding: 12px var(--space-4);
+  background: var(--surface-container-high);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(70, 69, 85, 0.15);
+  transition: all var(--transition);
 }
 
-.rank-position {
-  color: #2a7ae2;
-  font-weight: 700;
-  font-size: 16px;
-  min-width: 35px;
+.leaderboard-row:hover {
+  border-color: rgba(108, 99, 255, 0.2);
+  background: var(--surface-container-highest);
 }
 
-.rank-model {
+.leaderboard-rank {
+  font-size: 1.6rem;
+  line-height: 1;
+  min-width: 40px;
+  text-align: center;
+  opacity: 0.85;
+}
+
+.leaderboard-model {
   flex: 1;
-  color: #333;
-  font-family: monospace;
-  font-size: 14px;
-  font-weight: 500;
+  min-width: 0;
 }
 
-.rank-score {
-  color: #666;
-  font-size: 13px;
-  font-family: monospace;
-}
-
-.stage2 .tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
-.stage2 .tab {
-  padding: 8px 16px;
-  background: #ffffff;
-  border: 1px solid #d0d0d0;
-  border-radius: 6px 6px 0 0;
-  color: #666;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s;
-}
-
-.stage2 .tab:hover {
-  background: #f0f0f0;
-  color: #333;
-  border-color: #4a90e2;
-}
-
-.stage2 .tab.active {
-  background: #ffffff;
-  color: #4a90e2;
-  border-color: #4a90e2;
-  border-bottom-color: #ffffff;
+.leaderboard-model-name {
+  font-size: 0.85rem;
   font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.stage2 .tab-content {
-  background: #ffffff;
-  padding: 16px;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
-  margin-bottom: 20px;
+.leaderboard-model-full {
+  font-size: 0.68rem;
+  color: var(--text-subtle);
+  font-family: 'Fira Code', monospace;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.ranking-model {
-  color: #888;
-  font-size: 12px;
-  font-family: monospace;
-  margin-bottom: 12px;
+.leaderboard-score-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+  min-width: 120px;
 }
 
-.ranking-content {
-  color: #333;
-  line-height: 1.6;
-  font-size: 14px;
+.score-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-subtle);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
+.score-value {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--primary);
+  font-feature-settings: 'tnum';
+}
+
+.score-bar-track {
+  width: 100%;
+  height: 4px;
+  background: var(--surface-container);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, #6c63ff, #10b981);
+  transition: width var(--transition-slow);
+}
+
+.score-bar-fill.rank-1 { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.score-bar-fill.rank-2 { background: linear-gradient(90deg, #9ca3af, #d1d5db); }
+.score-bar-fill.rank-3 { background: linear-gradient(90deg, #cd7c2c, #e59a50); }
+
+.score-count {
+  font-size: 0.65rem;
+  color: var(--text-subtle);
+}
+
+/* Raw Evaluations Tabs */
+.eval-section {
+  margin-top: var(--space-5);
+}
+
+.eval-section-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-subtle);
+  margin-bottom: var(--space-3);
+}
+
+.eval-tabs {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-3);
+}
+
+.eval-tab {
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid rgba(70, 69, 85, 0.3);
+  background: transparent;
+  color: var(--text-muted);
+  transition: all var(--transition);
+  font-family: 'Inter', sans-serif;
+}
+
+.eval-tab:hover {
+  border-color: rgba(108, 99, 255, 0.3);
+  color: var(--primary);
+}
+
+.eval-tab.active {
+  background: rgba(108, 99, 255, 0.15);
+  border-color: rgba(108, 99, 255, 0.4);
+  color: var(--primary);
+}
+
+.eval-content {
+  background: var(--surface-container);
+  border: 1px solid rgba(70, 69, 85, 0.15);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+}
+
+.eval-content-header {
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-container-high);
+  border-bottom: 1px solid rgba(70, 69, 85, 0.15);
+  font-size: 0.72rem;
+  color: var(--text-subtle);
+  font-family: 'Fira Code', monospace;
+}
+
+.eval-content-body {
+  padding: var(--space-4) var(--space-5);
+  max-height: 380px;
+  overflow-y: auto;
+}
+
+/* Parsed ranking inside eval */
 .parsed-ranking {
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 2px solid #e0e0e0;
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-container-high);
+  border-radius: var(--radius-md);
+  border-left: 3px solid var(--accent-amber);
 }
 
-.parsed-ranking strong {
-  color: #2a7ae2;
-  font-size: 13px;
+.parsed-ranking-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--accent-amber);
+  margin-bottom: var(--space-2);
 }
 
 .parsed-ranking ol {
-  margin: 8px 0 0 0;
-  padding-left: 24px;
-  color: #333;
+  padding-left: 1.4rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
 }
 
-.parsed-ranking li {
-  margin: 4px 0;
-  font-family: monospace;
-  font-size: 13px;
-}
-
-.rank-count {
-  color: #999;
-  font-size: 12px;
-}
+.parsed-ranking li { margin-bottom: 2px; }

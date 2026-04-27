@@ -1,25 +1,79 @@
-.stage3 {
-  background: #f0fff0;
-  border-color: #c8e6c8;
+/* ============================================================
+   STAGE 3 — Chairman Synthesis — Ethos Noir
+   ============================================================ */
+
+.stage3-synthesis {
+  margin-top: var(--space-3);
+  background: linear-gradient(135deg,
+    rgba(16, 185, 129, 0.06) 0%,
+    rgba(0, 165, 114, 0.03) 100%
+  );
+  border: 1px solid rgba(16, 185, 129, 0.22);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-glow-emerald);
+  animation: glowPulse 3s ease-in-out infinite;
 }
 
-.final-response {
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 6px;
-  border: 1px solid #c8e6c8;
+@keyframes glowPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.15); }
+  50% { box-shadow: 0 0 32px rgba(16, 185, 129, 0.28); }
 }
 
-.chairman-label {
-  color: #2d8a2d;
-  font-size: 12px;
-  font-family: monospace;
-  margin-bottom: 12px;
+.stage3-synthesis-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4) var(--space-5);
+  background: rgba(16, 185, 129, 0.08);
+  border-bottom: 1px solid rgba(16, 185, 129, 0.15);
+}
+
+.stage3-chairman-label {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.chairman-crown {
+  font-size: 1.1rem;
+  animation: float 2.5s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.chairman-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--tertiary);
+}
+
+.chairman-model-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 0.65rem;
   font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(78, 222, 163, 0.1);
+  color: var(--tertiary);
+  border: 1px solid rgba(78, 222, 163, 0.2);
+  font-family: 'Fira Code', monospace;
 }
 
-.final-text {
-  color: #333;
-  line-height: 1.7;
-  font-size: 15px;
+.chairman-model-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--tertiary);
+  box-shadow: 0 0 6px rgba(78, 222, 163, 0.8);
+}
+
+.stage3-synthesis-body {
+  padding: var(--space-5) var(--space-6);
 }

@@ -1,65 +1,163 @@
-.stage {
-  margin: 24px 0;
-  padding: 20px;
-  background: #fafafa;
-  border-radius: 8px;
-  border: 1px solid #e0e0e0;
+/* ============================================================
+   STAGE 1 — Individual Responses — Ethos Noir
+   ============================================================ */
+
+.stage1 {
+  /* Inherits from stage base in ChatInterface.css */
 }
 
-.stage-title {
-  margin: 0 0 16px 0;
-  color: #333;
-  font-size: 16px;
-  font-weight: 600;
+/* Model Card Grid */
+.stage1-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-3);
 }
 
-.tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-
-.tab {
-  padding: 8px 16px;
-  background: #ffffff;
-  border: 1px solid #d0d0d0;
-  border-radius: 6px 6px 0 0;
-  color: #666;
+.model-card {
+  background: var(--surface-container-high);
+  border: 1px solid rgba(70, 69, 85, 0.25);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
   cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s;
+  transition: all var(--transition);
+  position: relative;
+  overflow: hidden;
 }
 
-.tab:hover {
-  background: #f0f0f0;
-  color: #333;
-  border-color: #4a90e2;
+.model-card:hover {
+  border-color: rgba(108, 99, 255, 0.3);
+  background: var(--surface-container-highest);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-violet);
 }
 
-.tab.active {
-  background: #ffffff;
-  color: #4a90e2;
-  border-color: #4a90e2;
-  border-bottom-color: #ffffff;
+.model-card.active {
+  border-color: rgba(108, 99, 255, 0.4);
+  background: var(--surface-container-highest);
+  box-shadow: var(--shadow-glow-violet);
+}
+
+.model-card.active::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(108, 99, 255, 0.06) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.model-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.model-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+}
+
+.model-badge.gemini {
+  background: rgba(96, 165, 250, 0.12);
+  color: #60a5fa;
+  border: 1px solid rgba(96, 165, 250, 0.22);
+}
+
+.model-badge.groq {
+  background: rgba(251, 146, 60, 0.1);
+  color: #fb923c;
+  border: 1px solid rgba(251, 146, 60, 0.2);
+}
+
+.model-badge.llama {
+  background: rgba(167, 139, 250, 0.1);
+  color: #a78bfa;
+  border: 1px solid rgba(167, 139, 250, 0.2);
+}
+
+.model-badge.default {
+  background: rgba(196, 192, 255, 0.1);
+  color: var(--primary);
+  border: 1px solid rgba(196, 192, 255, 0.15);
+}
+
+.model-badge-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.8;
+}
+
+.latency-chip {
+  font-size: 0.65rem;
   font-weight: 600;
+  color: var(--text-subtle);
+  background: var(--surface-container);
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+  font-feature-settings: 'tnum';
 }
 
-.tab-content {
-  background: #ffffff;
-  padding: 16px;
-  border-radius: 6px;
-  border: 1px solid #e0e0e0;
+.model-name-full {
+  font-size: 0.72rem;
+  color: var(--text-subtle);
+  margin-bottom: var(--space-2);
+  font-family: 'Fira Code', monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.model-name {
-  color: #888;
-  font-size: 12px;
-  margin-bottom: 12px;
-  font-family: monospace;
-}
-
-.response-text {
-  color: #333;
+.model-preview {
+  font-size: 0.8rem;
+  color: var(--text-muted);
   line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Expanded Response */
+.stage1-detail {
+  margin-top: var(--space-4);
+  background: var(--surface-container);
+  border: 1px solid rgba(70, 69, 85, 0.2);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.stage1-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-container-high);
+  border-bottom: 1px solid rgba(70, 69, 85, 0.15);
+}
+
+.stage1-detail-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.stage1-detail-body {
+  padding: var(--space-4) var(--space-5);
+  max-height: 400px;
+  overflow-y: auto;
 }
