@@ -21,8 +21,8 @@ $$
 
 Where:
 
-- Performance Score: response quality, correctness, and reasoning ability
-- Bias Score: measured social, cultural, or linguistic bias in the response
+- Performance Score: response quality, correctness, and reasoning ability,
+- Bias Score: measured social, cultural, or linguistic bias in the response,
 - $\lambda$: fairness weighting factor that controls how strongly bias penalizes selection
 
 The model with the best adjusted score becomes the adaptive chairperson for final synthesis.
